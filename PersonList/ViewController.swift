@@ -22,7 +22,7 @@ class ViewController: UIViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addPerson))
         navigationItem.rightBarButtonItem = addButton
     }
-
+    
     @objc func addPerson(){
         let vc = CreatePersonViewController()
         vc.passData = { [weak self] data in
@@ -39,7 +39,7 @@ class ViewController: UIViewController {
         tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
         tableView.rowHeight = UITableView.automaticDimension
     }
-
+    
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
@@ -51,6 +51,31 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
         cell.person = persons[indexPath.row]
         return cell
+    }
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let edit = UIContextualAction(style: .normal, title: "Edit") {(action, view, completion ) in
+            print ("Edit")
+            let vc = CreatePersonViewController()
+            vc.personCurront = self.persons[indexPath.row]
+            vc.passData = { [weak self] data in
+                guard let strongSelf = self else {return}
+                strongSelf.persons[indexPath.row] = data
+                strongSelf.tableView.reloadData()
+                }
+            self.navigationController?.pushViewController(vc, animated: true)
+            }
+            
+        let delete = UIContextualAction(style: .destructive, title: "Delete") {(action, view, completion) in
+            self.persons.remove(at: indexPath.row)
+            tableView.reloadData()
+            }
+        edit.backgroundColor = .blue
+        delete.backgroundColor = .red
+        let configration = UISwipeActionsConfiguration(actions: [edit, delete])
+        
+        return configration
+        
+        
     }
 }
 

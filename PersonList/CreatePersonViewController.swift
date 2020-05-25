@@ -13,7 +13,7 @@ class CreatePersonViewController: UIViewController {
     @IBOutlet weak var nameTexField: UITextField!
     @IBOutlet weak var phoneTextField: UITextField!
     @IBOutlet weak var photoImageView: UIImageView!
-    
+    var personCurront: Person?
     var passData: ((Person) -> ())?
     var imagePicker: UIImagePickerController!
     var manager: ManagerImagePicker!
@@ -27,6 +27,11 @@ class CreatePersonViewController: UIViewController {
         imagePicker = UIImagePickerController()
         manager = ManagerImagePicker(imagePicker, self)
         imagePicker.delegate = self
+        if let personCurrent = personCurront {
+            nameTexField.text = personCurrent.name
+            phoneTextField.text = personCurrent.phone
+            photoImageView.image = personCurrent.avatarImage
+        }
     }
     
     @objc func saveData() {
